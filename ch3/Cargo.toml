@@ -8,5 +8,5 @@ edition = "2021"
 [dependencies]
 
 [[bin]]
-name = "ch3"
-path = "ch3.rs"
+name = "main"
+path = "main.rs"
