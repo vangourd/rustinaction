@@ -16,7 +16,10 @@
         with pkgs;
         {
           devShells.default = mkShell {
-            buildInputs = [ rust-bin.stable.latest.default ];
+            buildInputs = [ 
+              rust-bin.stable.latest.default
+            ];
+            RUST_SRC_PATH="${pkgs.latest.rustChannels.stable.rust-src}/lib/rustlib/src/rust/library/";
           };
         }
   );
