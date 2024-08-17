@@ -1,66 +1,28 @@
-#![allow(unused_variables)]
+use rand::{random}; // 1
 
-#[derive(Debug)]
-struct File{
-    name: String,
-    data: Vec<u8>,
-}
+static mut ERROR: isize = 0; //2 
 
-impl File{
-    fn new(name: &str) -> File {
-        File {
-            name: String::from(name),
-            data: Vec::new(),
+struct File; // 3
+
+#[allow(unused_variables)]
+fn read(f: &File, save_to: &mut Vec<u8>) -> usize {
+    if random() && random() && random() { // 4
+        unsafe {
+            ERROR = 1; // 5
         }
     }
-
-    fn new_with_data(
-        name: &str,
-        data: &Vec<u8>,
-    ) -> File {
-        let mut f = File::new(name);
-        f.data = data.clone();
-        f
-    }
-
-    fn read(
-        self: &File,
-        save_to: &mut Vec<u8>,
-    ) -> usize {
-        let mut tmp = self.data.clone();
-        let read_length = tmp.len();
-        save_to.reserve(read_length);
-        save_to.append(&mut tmp);
-        read_length
-    }
-    
+    0 // 6
 }
 
-fn open(f: &mut File) -> bool {
-    true
-}
-
-fn close(f: &mut File) -> bool {
-    true
-}
-
-
+#[allow(unused_mut)] // 7
 fn main() {
-    let f3_data: Vec<u8> = vec![
-        114,117,115,116,33
-    ];
+    let mut f = File;
+    let mut buffer = vec![];
 
-    let mut f3 = File::new_with_data("2.txt", &f3_data);
-
-    let mut buffer:Vec<u8> = vec![];
-
-    open(&mut f3);
-    let f3_length = f3.read(&mut buffer);
-    close(&mut f3);
-
-    let text = String::from_utf8_lossy(&buffer);
-
-    println!("{:?}", f3);
-    println!("{} is {} bytes long",&f3.name, f3_length);
-    println!("{}", text);
+    read(&f, &mut buffer);
+    unsafe { // 8
+        if ERROR != 0 {
+            panic!("An error has occurred!")
+        }
+    }
 }
