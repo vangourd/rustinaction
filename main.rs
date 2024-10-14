@@ -1,50 +1,27 @@
-#![allow(dead_code)] // 1
-
-use std::fmt;   // 2
-use std::fmt::{Display}; // 3
-
 #[derive(Debug,PartialEq)]
-enum FileState {
+pub enum FileState {        // 1
     Open,
     Closed,
 }
 
 #[derive(Debug)]
-struct File {
-    name: String,
-    data: Vec<u8>,
-    state: FileState,
-}
-
-impl Display for FileState {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            FileState::Open => write!(f, "OPEN"), // 4
-            FileState::Closed => write!(f, "CLOSED"), // 4
-        }
-    }
-}
-
-impl Display for File {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "<{} ({})>",
-            self.name, self.state) // 5
-    }
+pub struct File {
+    pub name: String,
+    data: Vec<u8>,      // 2
+    pub state: FileState,
 }
 
 impl File {
-    fn new(name: &str) -> File {
+    pub fn new(name: &str) -> File {    // 3
         File {
             name: String::from(name),
             data: Vec::new(),
-            state: FileState::Closed,
+            state: FileState::Closed
         }
     }
 }
 
 fn main() {
-    let f6 = File::new("f6.text");
-    // ...
-    println!("{:?}", f6); // 6
-    println!("{}", f6); // 7
+    let f7 = File::new("f7.txt");
+    println!("{:?}", f7);
 }
