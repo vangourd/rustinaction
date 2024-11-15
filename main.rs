@@ -1,23 +1,30 @@
-#[derive(Debug,Clone,Copy)]
-struct CubeSat {
-    id: u64,
+use std::rc::Rc;
+use std::cell::RefCell;
+
+#[derive(Debug)]
+struct GroundStation {
+    radio_freq: f64 // Mhz
 }
 
-#[derive(Debug,Clone,Copy)]
-enum StatusMessage {
-    Ok,
-}
+fn main() {
+    let base: Rc<RefCell<GroundStation>> = 
+        Rc::new(RefCell::new(
+            GroundStation {
+                radio_freq: 87.64
+            }
+        ));
 
-fn check_status(sat_id: CubeSat) -> StatusMessage {
-    StatusMessage::Ok
-}
+    println!("base: {:?}", base);
 
-fn main () {
-    let sat_a = CubeSat { id: 0 };
+    {
+        let mut base_2 = base.borrow_mut();
+        base_2.radio_freq -= 12.34;
+        println!("base_2: {:?}", base_2);
+    }
 
-    let a_status = check_status(sat_a.clone());
-    println!("a: {:?}", a_status.clone());
+    let mut base_3 = base.borrow_mut();
+    base_3.radio_freq += 43.21;
 
-    let a_status = check_status(sat_a);
-    println!("a: {:?}", a_status);
+    println!("base: {:?}", base);
+    println!("base_3: {:?}", base_3);
 }
