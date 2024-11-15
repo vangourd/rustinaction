@@ -9,30 +9,61 @@ struct Mailbox {
     messages: Vec<Message>,
 }
 
-type Message = String;
 
+#[derive(Debug)]
+struct Message {
+    to: u64,
+    content: String,
+}
 struct GroundStation;
 
 impl GroundStation {
-    fn send(&self, to: &mut CubeSat, msg: Message) {
-        to.mailbox.messages.push(msg);
+    fn send(&self, mailbox: &mut Mailbox, to: &CubeSat, msg: Message) {
+        mailbox.post(to, msg); // 1
+    }
+
+    fn connect(&self, sat_id: u64) -> CubeSat {
+        CubeSat { id: sat_id, mailbox: Mailbox { messages: vec![] }}
     }
 }
 
 impl CubeSat {
-    fn recv(&mut self) -> Option<Message> {
-        self.mailbox.messages.pop()
+    fn recv(&self, mailbox: &mut Mailbox) -> Option<Message> { // 2
+        mailbox.deliver(&self)
     }
+}
+
+impl Mailbox {
+    fn post(&mut self, msg: Message) {
+        self.messages.push(msg);            // 3
+    }
+
+    fn deliver( &mut self, recipient: &CubeSat ) -> Option<Message> { // 4
+        for i in 0..self.messages.len() {
+            if self.messages[i].to == recipient.id {
+                let msg = self.messages.remove(i);
+                return Some(msg);                                    // 5
+            }
+        }
+
+        None                                    // 6
+    }
+}
+
+fn fetch_sat_ids() -> Vec<u64> {
+    vec![1,2,3]
 }
 
 fn main() {
     let base = GroundStation {};
-    let mut sat_a = CubeSat {
-        id: 0,
-        mailbox: Mailbox {
-            messages: vec![],
-        },
-    };
+
+    let sat_ids = fetch_sat_ids();
+
+    for sat_id in sat_ids {
+        let mut sat = base.connect(sat_id);
+
+        base.send(&mut sat, Message::from("hello"));
+    }
 
     println!("t0: {:?}", sat_a);
 
