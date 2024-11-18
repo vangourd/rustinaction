@@ -1,6 +1,6 @@
-#[allow(arithmetic_overflow)]
 fn main() {
-    let (a, b) = (200, 200);
-    let c: u8 = a + b;              // 2
-    println!("200 + 200 = {}", c);
+    let n: f32 = 42.42;
+    let n_bits: u32 = n.to_bits();
+    let sign_bit = n_bits >> 31;
+    println!("{:?} {:?}", n_bits, sign_bit);
 }
